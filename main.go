@@ -29,6 +29,10 @@ func main() {
 		result = two(lines)
 	case day == 2 && part == 2:
 		result = twoSecond(lines)
+	case day == 3 && part == 1:
+		result = three(lines)
+	case day == 3 && part == 2:
+		result = threeSecond(lines)
 	}
 
 	log.Println("Result", result)

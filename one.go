@@ -37,7 +37,6 @@ func one(lines []string) int {
 	}
 	sort.Sort(sort.IntSlice(left))
 	sort.Sort(sort.IntSlice(right))
-	log.Println("Length of list", len(left))
 	distance := 0
 	for i, l := range left {
 		r := right[i]
