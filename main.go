@@ -33,6 +33,8 @@ func main() {
 		result = three(lines)
 	case day == 3 && part == 2:
 		result = threeSecond(lines)
+	case day == 4:
+		result = four(lines, part)
 	}
 
 	log.Println("Result", result)

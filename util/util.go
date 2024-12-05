@@ -44,3 +44,14 @@ func ParseIntArray(line string) []int {
 	}
 	return arr
 }
+
+func ParseRuneGrid(lines []string) [][]rune {
+	grid := make([][]rune, 0)
+	for _, line := range lines {
+		if len(line) == 0 {
+			break
+		}
+		grid = append(grid, []rune(line))
+	}
+	return grid
+}
