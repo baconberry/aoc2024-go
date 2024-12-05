@@ -1,4 +1,4 @@
-package main
+package aoc
 
 import "aoc2024/util"
 
@@ -6,7 +6,7 @@ type IntSet map[int]bool
 
 type Rule map[int]IntSet
 
-func five(lines []string, part int) int {
+func Five(lines []string, part int) int {
 	rules := make([]string, 0)
 	pagesIdx := 0
 	for i, line := range lines {

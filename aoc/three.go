@@ -1,4 +1,4 @@
-package main
+package aoc
 
 import (
 	"aoc2024/util"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func three(lines []string) int {
+func Three(lines []string) int {
 	sum := 0
 	for _, line := range lines {
 		sum += mulLine(line)
@@ -24,7 +24,7 @@ func mulLine(line string) int {
 	return sum
 }
 
-func threeSecond(lines []string) int {
+func ThreeSecond(lines []string) int {
 	line := strings.Join(lines, " ")
 	re := regexp.MustCompile("don't\\(\\)")
 	reDo := regexp.MustCompile("do\\(\\)")

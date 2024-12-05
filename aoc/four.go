@@ -1,10 +1,10 @@
-package main
+package aoc
 
 import (
 	"aoc2024/util"
 )
 
-func four(lines []string, part int) int {
+func Four(lines []string, part int) int {
 	if part == 1 {
 		return fourFirst(lines)
 	}

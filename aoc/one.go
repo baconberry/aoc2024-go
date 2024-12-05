@@ -1,4 +1,4 @@
-package main
+package aoc
 
 import (
 	"log"
@@ -29,7 +29,7 @@ func splitList(lines []string) ([]int, []int, error) {
 	return listLeft, listRight, nil
 }
 
-func one(lines []string) int {
+func One(lines []string) int {
 	left, right, err := splitList(lines)
 	if err != nil {
 		log.Fatal("error parsing lists", err)
@@ -45,7 +45,7 @@ func one(lines []string) int {
 	return distance
 }
 
-func oneSecond(lines []string) int {
+func OneSecond(lines []string) int {
 	left, right, err := splitList(lines)
 	if err != nil {
 		log.Fatal("error parsing lists", err)

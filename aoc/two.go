@@ -1,11 +1,11 @@
-package main
+package aoc
 
 import (
 	"aoc2024/aoctypes"
 	"aoc2024/util"
 )
 
-func two(lines []string) int {
+func Two(lines []string) int {
 	grid := util.ParseIntGrid(lines)
 	grid = aoctypes.IntGrid(grid)
 	result := 0
@@ -18,7 +18,7 @@ func two(lines []string) int {
 	return result
 }
 
-func twoSecond(lines []string) int {
+func TwoSecond(lines []string) int {
 	grid := util.ParseIntGrid(lines)
 	grid = aoctypes.IntGrid(grid)
 	result := 0

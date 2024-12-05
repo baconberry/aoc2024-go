@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aoc2024/aoc"
 	"bufio"
 	"log"
 	"os"
@@ -22,21 +23,21 @@ func main() {
 	result := 0
 	switch {
 	case day == 1 && part == 1:
-		result = one(lines)
+		result = aoc.One(lines)
 	case day == 1 && part == 2:
-		result = oneSecond(lines)
+		result = aoc.OneSecond(lines)
 	case day == 2 && part == 1:
-		result = two(lines)
+		result = aoc.Two(lines)
 	case day == 2 && part == 2:
-		result = twoSecond(lines)
+		result = aoc.TwoSecond(lines)
 	case day == 3 && part == 1:
-		result = three(lines)
+		result = aoc.Three(lines)
 	case day == 3 && part == 2:
-		result = threeSecond(lines)
+		result = aoc.ThreeSecond(lines)
 	case day == 4:
-		result = four(lines, part)
+		result = aoc.Four(lines, part)
 	case day == 5:
-		result = five(lines, part)
+		result = aoc.Five(lines, part)
 	}
 
 	log.Println("Result", result)
