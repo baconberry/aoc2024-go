@@ -38,6 +38,8 @@ func main() {
 		result = aoc.Four(lines, part)
 	case day == 5:
 		result = aoc.Five(lines, part)
+	case day == 6:
+		result = aoc.Six(lines)
 	}
 
 	log.Println("Result", result)

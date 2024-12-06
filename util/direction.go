@@ -38,3 +38,17 @@ func (d Direction) CoordinatesDiff() (int, int) {
 		return 0, 0 // return 0, 0 if an invalid direction is given
 	}
 }
+
+func (d Direction) Right() Direction {
+	switch d {
+	case N:
+		return E
+	case E:
+		return S
+	case S:
+		return W
+	case W:
+		return N
+	}
+	return NONE
+}
