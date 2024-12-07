@@ -7,9 +7,12 @@ import (
 
 func ParseIntGrid(lines []string) [][]int {
 	grid := make([][]int, 0)
-	re := regexp.MustCompile("(\\d+)*")
+	re := regexp.MustCompile("(\\d+)")
 
 	for _, line := range lines {
+		if len(line) == 0 {
+			break
+		}
 		parts := re.FindAllString(line, -1)
 		if len(parts) == 1 && parts[0] == "" {
 			break
