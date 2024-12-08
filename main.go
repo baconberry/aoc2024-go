@@ -43,7 +43,7 @@ func main() {
 	case day == 7:
 		result = aoc.Seven(lines, part)
 	case day == 8:
-		result = aoc.Eight(lines)
+		result = aoc.Eight(lines, part)
 	}
 
 	log.Println("Result", result)
