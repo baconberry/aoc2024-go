@@ -58,3 +58,29 @@ func ParseRuneGrid(lines []string) [][]rune {
 	}
 	return grid
 }
+
+type RuneLocation struct {
+	C    rune
+	X, Y int
+}
+
+func GetRuneLocations(lines []string, runeFilter func(c rune) bool) ([]RuneLocation, int, int) {
+	runeLocations := make([]RuneLocation, 0)
+	height := len(lines)
+	width := 0
+	for y, line := range lines {
+		if width == 0 {
+			width = len(line)
+		}
+		if len(line) == 0 {
+			height = y
+			break
+		}
+		for x, c := range line {
+			if runeFilter(c) {
+				runeLocations = append(runeLocations, RuneLocation{c, x, y})
+			}
+		}
+	}
+	return runeLocations, width, height
+}
