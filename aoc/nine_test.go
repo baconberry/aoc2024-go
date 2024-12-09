@@ -12,5 +12,10 @@ func TestNine(t *testing.T) {
 	if result != 1928 {
 		t.Fail()
 	}
+	uresult := NineSecond(strings.Split(text, "\n"))
+
+	if uresult != 2858 {
+		t.Fail()
+	}
 
 }
