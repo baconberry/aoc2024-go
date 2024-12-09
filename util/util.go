@@ -84,3 +84,21 @@ func GetRuneLocations(lines []string, runeFilter func(c rune) bool) ([]RuneLocat
 	}
 	return runeLocations, width, height
 }
+
+func ParseSingleDigitArray(line string) []int {
+	re := regexp.MustCompile("(\\d)")
+	parts := re.FindAllString(line, -1)
+	arr := make([]int, 0)
+	if len(parts) == 1 && parts[0] == "" {
+		return arr
+	}
+	for _, part := range parts {
+		strconv.Atoi(part)
+		n, err := strconv.Atoi(part)
+		if err != nil {
+			panic("Could not convert string to int " + err.Error())
+		}
+		arr = append(arr, n)
+	}
+	return arr
+}

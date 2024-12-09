@@ -44,6 +44,9 @@ func main() {
 		result = aoc.Seven(lines, part)
 	case day == 8:
 		result = aoc.Eight(lines, part)
+	case day == 9:
+		log.Println("Real result", aoc.Nine(lines))
+		result = 0
 	}
 
 	log.Println("Result", result)
