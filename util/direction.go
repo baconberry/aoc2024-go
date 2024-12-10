@@ -15,6 +15,7 @@ const (
 )
 
 var ALL_DIRECTIONS = [...]Direction{N, S, E, W, NE, NW, SE, SW}
+var CARDINAL_DIRECTIONS = [...]Direction{N, S, E, W}
 
 func (d Direction) CoordinatesDiff() (int, int) {
 	switch d {

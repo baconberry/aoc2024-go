@@ -5,9 +5,71 @@ import (
 	"strconv"
 )
 
+type Grid[T any] struct {
+	grid          [][]T
+	height, width int
+}
+
+func NewGrid[T any](grid [][]T) Grid[T] {
+	height := len(grid)
+	width := 0
+	if height > 0 {
+		width = len(grid[0])
+	}
+	return Grid[T]{grid, height, width}
+}
+
+func (g *Grid[T]) Iterate(fn func(int, int, T)) {
+	for y, row := range g.grid {
+		for x, t := range row {
+			fn(x, y, t)
+		}
+	}
+}
+
+func (g *Grid[T]) GetNeighbor(loc Point, dir Direction) *Point {
+	newPoint := loc.PlusDirection(dir)
+	if newPoint.WithinBounds(g.BoundPoint()) {
+		return &newPoint
+	}
+	return nil
+}
+
+func (g Grid[T]) BoundPoint() Point {
+	return Point{g.width, g.height}
+}
+
+func (g *Grid[T]) GetValue(point Point) T {
+	return g.grid[point.Y][point.X]
+}
+
 func ParseIntGrid(lines []string) [][]int {
 	grid := make([][]int, 0)
 	re := regexp.MustCompile("(\\d+)")
+
+	for _, line := range lines {
+		if len(line) == 0 {
+			break
+		}
+		parts := re.FindAllString(line, -1)
+		if len(parts) == 1 && parts[0] == "" {
+			break
+		}
+		row := make([]int, len(parts))
+		for i, part := range parts {
+			n, err := strconv.Atoi(part)
+			if err != nil {
+				panic("Could not convert string to int " + err.Error())
+			}
+			row[i] = n
+		}
+		grid = append(grid, row)
+	}
+	return grid
+}
+func ParseDigitGrid(lines []string) [][]int {
+	grid := make([][]int, 0)
+	re := regexp.MustCompile("(\\d)")
 
 	for _, line := range lines {
 		if len(line) == 0 {
