@@ -5,25 +5,54 @@ import (
 	"strconv"
 )
 
-func Eleven(lines []string) int {
+func Eleven(lines []string, part int) int {
 	arr := util.ParseIntArray(lines[0])
 	stringArr := make([]string, len(arr))
 	for i, n := range arr {
 		stringArr[i] = strconv.Itoa(n)
 	}
-	result := stringArr
-	for i := 0; i < 25; i++ {
-		result = blink(result)
+	limit := 25
+	if part == 2 {
+		limit = 75
 	}
-	return len(result)
+	memo := make(map[BlinkN]int)
+	sum := 0
+	for _, s := range stringArr {
+		_, n := blinkNTimes(s, limit, &memo)
+		sum += n
+	}
+	return sum
 }
 
-func blink(arr []string) []string {
-	result := make([]string, 0)
-	for _, s := range arr {
-		result = append(result, blinkNumber(s)...)
+type BlinkN struct {
+	s     string
+	times int
+}
+
+func blinkNTimes(s string, times int, memo *map[BlinkN]int) ([]string, int) {
+	if times == 0 {
+		return nil, 1
 	}
-	return result
+	blink := BlinkN{s, times}
+	v, ok := (*memo)[blink]
+	if ok {
+		return nil, v
+	}
+
+	firstBlink := blinkNumber(s)
+	result := make([]string, 0)
+	sum := 0
+	for _, part := range firstBlink {
+		arr, n := blinkNTimes(part, times-1, memo)
+		if n >= 0 {
+			sum += n
+		} else {
+			result = append(result, arr...)
+		}
+	}
+	total := sum + len(result)
+	(*memo)[blink] = total
+	return result, total
 }
 
 func blinkNumber(s string) []string {
