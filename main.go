@@ -50,6 +50,8 @@ func main() {
 		result = aoc.NineSecond(lines)
 	case day == 10:
 		result = aoc.Ten(lines, part)
+	case day == 11:
+		result = aoc.Eleven(lines)
 	}
 
 	log.Println("Result", result)
