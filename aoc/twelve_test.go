@@ -1,0 +1,21 @@
+package aoc
+
+import (
+	"strings"
+	"testing"
+)
+
+func TestTwelve(t *testing.T) {
+	text := "AAAA\nBBCD\nBBCC\nEEEC\n"
+	result := Twelve(strings.Split(text, "\n"))
+
+	if result != 140 {
+		t.Fail()
+	}
+	text = "RRRRIICCFF\nRRRRIICCCF\nVVRRRCCFFF\nVVRCCCJFFF\nVVVVCJJCFE\nVVIVCCJJEE\nVVIIICJJEE\nMIIIIIJJEE\nMIIISIJEEE\nMMMISSJEEE\n"
+	result = Twelve(strings.Split(text, "\n"))
+
+	if result != 1930 {
+		t.Fail()
+	}
+}
