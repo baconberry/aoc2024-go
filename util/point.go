@@ -15,3 +15,11 @@ func (p Point) WithinBounds(bound Point) bool {
 	}
 	return true
 }
+
+func (p Point) Multiply(scale int) Point {
+	return Point{p.X * scale, p.Y * scale}
+}
+
+func (p Point) Diff(other Point) Point {
+	return Point{other.X - p.X, other.Y - p.Y}
+}

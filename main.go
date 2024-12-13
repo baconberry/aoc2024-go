@@ -54,6 +54,8 @@ func main() {
 		result = aoc.Eleven(lines, part)
 	case day == 12:
 		result = aoc.Twelve(lines)
+	case day == 13:
+		result = aoc.Thirteen(lines)
 	}
 
 	log.Println("Result", result)
@@ -68,7 +70,7 @@ func readUntilEOF() []string {
 	return lines
 }
 
-func readFromFile() []string {
+func ReadFromFile() []string {
 	f, err := os.Open("input.txt")
 	if err != nil {
 		panic("could not read file" + err.Error())

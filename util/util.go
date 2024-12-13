@@ -43,6 +43,10 @@ func (g *Grid[T]) GetValue(point Point) T {
 	return g.grid[point.Y][point.X]
 }
 
+func (g *Grid[T]) Row(i int) []T {
+	return g.grid[i]
+}
+
 func ParseIntGrid(lines []string) [][]int {
 	grid := make([][]int, 0)
 	re := regexp.MustCompile("(\\d+)")
