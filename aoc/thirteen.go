@@ -3,7 +3,6 @@ package aoc
 import (
 	"aoc2024/util"
 	"log"
-	"math"
 )
 
 type PointCost struct {
@@ -11,20 +10,22 @@ type PointCost struct {
 	cost  int
 }
 
-func Thirteen(lines []string) int {
+func Thirteen(lines []string, part int) int {
 	offset := 0
 	sum := 0
 	for offset < len(lines) {
 		grid := util.NewGrid(util.ParseIntGrid(lines[offset:]))
-		a, b, prize := gridToThreePoints(&grid)
-		aCost := PointCost{a, 3}
-		bCost := PointCost{b, 1}
-		altCost := math.MaxInt
-		for i := 0; i < 101; i++ {
-			altCost = min(getCost(aCost, bCost, prize, i), altCost)
+		ap, bp, prize := gridToThreePoints(&grid)
+		if part == 2 {
+			prize.X += 10000000000000
+			prize.Y += 10000000000000
 		}
-		if altCost < math.MaxInt {
-			sum += altCost
+
+		a, b := calculateMinCost(ap.X, ap.Y, bp.X, bp.Y, prize.X, prize.Y)
+		diff := ap.Multiply(a).Diff(prize)
+		diff = diff.Diff(bp.Multiply(b))
+		if diff.X == 0 && diff.Y == 0 {
+			sum += (a * 3) + b
 		}
 		offset += 4
 	}
@@ -32,31 +33,10 @@ func Thirteen(lines []string) int {
 	return sum
 }
 
-func getCost(a PointCost, b PointCost, prize util.Point, aScale int) int {
-	endPoint := a.point.Multiply(aScale)
-	diffPoint := endPoint.Diff(prize)
-	if diffPoint.X == 0 && diffPoint.Y == 0 {
-		//only a is needed
-		return a.cost * aScale
-	}
-	numerator := diffPoint.X
-	if numerator < 0 {
-		return math.MaxInt
-	}
-	bScale := numerator / b.point.X
-	if bScale == 0 {
-		return math.MaxInt
-	}
-	if bScale > 100 {
-		return math.MaxInt
-	}
-	bDiff := diffPoint.Diff(b.point.Multiply(bScale))
-	if bDiff.X == 0 && bDiff.Y == 0 {
-		aCost := a.cost * aScale
-		bCost := bScale * b.cost
-		return aCost + bCost
-	}
-	return math.MaxInt
+func calculateMinCost(ax int, ay int, bx int, by int, x int, y int) (int, int) {
+	a := ((y * bx) - (x * by)) / ((bx * ay) - (ax * by))
+	b := ((y * ax) - (ay * x)) / ((by * ax) - (bx * ay))
+	return a, b
 }
 
 func gridToThreePoints(grid *util.Grid[int]) (util.Point, util.Point, util.Point) {
