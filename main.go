@@ -53,7 +53,7 @@ func main() {
 	case day == 11:
 		result = aoc.Eleven(lines, part)
 	case day == 12:
-		result = aoc.Twelve(lines)
+		result = aoc.Twelve(lines, part)
 	case day == 13:
 		result = aoc.Thirteen(lines, part)
 	}

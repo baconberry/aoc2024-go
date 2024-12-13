@@ -23,3 +23,9 @@ func (p Point) Multiply(scale int) Point {
 func (p Point) Diff(other Point) Point {
 	return Point{other.X - p.X, other.Y - p.Y}
 }
+
+func (p Point) PlusAll(d int) Point {
+	p.X += d
+	p.Y += d
+	return p
+}

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"log"
 	"regexp"
 	"strconv"
 )
@@ -17,6 +18,17 @@ func NewGrid[T any](grid [][]T) Grid[T] {
 		width = len(grid[0])
 	}
 	return Grid[T]{grid, height, width}
+}
+
+func InitGrid[T any](bounds Point, initValue T) Grid[T] {
+	grid := make([][]T, bounds.Y)
+	for y := 0; y < bounds.Y; y++ {
+		grid[y] = make([]T, bounds.X)
+		for x := 0; x < bounds.X; x++ {
+			grid[y][x] = initValue
+		}
+	}
+	return NewGrid(grid)
 }
 
 func (g *Grid[T]) Iterate(fn func(int, int, T)) {
@@ -41,6 +53,44 @@ func (g Grid[T]) BoundPoint() Point {
 
 func (g *Grid[T]) GetValue(point Point) T {
 	return g.grid[point.Y][point.X]
+}
+func (g *Grid[T]) GetOOBValue(point Point) *T {
+	if point.WithinBounds(g.BoundPoint()) {
+		return &g.grid[point.Y][point.X]
+	}
+	return nil
+}
+
+func (g *Grid[T]) AugmentAndInit(augmentBy int, initValue T) Grid[T] {
+	bounds := g.BoundPoint()
+	bounds.X += augmentBy
+	bounds.Y += augmentBy
+	return InitGrid(bounds, initValue)
+}
+
+func (g *Grid[T]) SetValue(point Point, c T) {
+	g.grid[point.Y][point.X] = c
+}
+
+func (g *Grid[T]) Print(fn func(tVal T) string) {
+	for _, row := range g.grid {
+		s := ""
+		for _, t := range row {
+			s = s + " " + fn(t)
+		}
+		log.Println(s)
+	}
+}
+
+func (g *Grid[T]) Grid() [][]T {
+	return g.grid
+}
+
+func (g *Grid[T]) Width() int {
+	return g.width
+}
+func (g *Grid[T]) Height() int {
+	return g.height
 }
 
 func (g *Grid[T]) Row(i int) []T {
