@@ -99,7 +99,7 @@ func (g *Grid[T]) Row(i int) []T {
 
 func ParseIntGrid(lines []string) [][]int {
 	grid := make([][]int, 0)
-	re := regexp.MustCompile("(\\d+)")
+	re := regexp.MustCompile("(-?\\d+)")
 
 	for _, line := range lines {
 		if len(line) == 0 {

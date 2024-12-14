@@ -29,3 +29,7 @@ func (p Point) PlusAll(d int) Point {
 	p.Y += d
 	return p
 }
+
+func (p Point) PlusPoint(o Point) Point {
+	return Point{p.X + o.X, p.Y + o.Y}
+}
