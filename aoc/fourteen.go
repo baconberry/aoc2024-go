@@ -51,22 +51,29 @@ type RobotTime struct {
 
 func XmasTree(lines []string, width int, height int) int {
 	grid := util.ParseIntGrid(lines)
-	robots := make([]Robot, 0)
+	robots := make(map[Robot][]util.Point)
 	for _, row := range grid {
 		px, py := row[0], row[1]
 		vx, vy := row[2], row[3]
 		px, py = fixRobotPosition(px, py, width, height)
-		robots = append(robots, Robot{util.Point{X: px, Y: py}, util.Point{X: vx, Y: vy}})
+		robot := Robot{util.Point{X: px, Y: py}, util.Point{X: vx, Y: vy}}
+		robots[robot] = make([]util.Point, 1)
+		robots[robot][0] = robot.initPoint
 	}
-	time := 6600
+	time := 1
 	for {
 		if time%10 == 0 {
 			log.Println("Rendering time ", time)
 		}
 		treeSet := make(map[util.Point]bool)
-		for _, r := range robots {
-			lx, ly := robotLastPosition(r.initPoint.X, r.initPoint.Y, r.velocity.X, r.velocity.Y, time, width, height)
+		for r, _ := range robots {
+			np := robots[r][time-1]
+			nx, ny := np.X, np.Y
+			nx += r.velocity.X
+			ny += r.velocity.Y
+			lx, ly := fixRobotPosition(nx, ny, width, height)
 			treeSet[util.Point{X: lx, Y: ly}] = true
+			robots[r] = append(robots[r], util.Point{X: lx, Y: ly})
 		}
 		if isXmasTree(treeSet) {
 			break
