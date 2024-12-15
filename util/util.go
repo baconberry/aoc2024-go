@@ -1,17 +1,18 @@
 package util
 
 import (
+	"cmp"
 	"log"
 	"regexp"
 	"strconv"
 )
 
-type Grid[T any] struct {
+type Grid[T cmp.Ordered] struct {
 	grid          [][]T
 	height, width int
 }
 
-func NewGrid[T any](grid [][]T) Grid[T] {
+func NewGrid[T cmp.Ordered](grid [][]T) Grid[T] {
 	height := len(grid)
 	width := 0
 	if height > 0 {
@@ -20,7 +21,7 @@ func NewGrid[T any](grid [][]T) Grid[T] {
 	return Grid[T]{grid, height, width}
 }
 
-func InitGrid[T any](bounds Point, initValue T) Grid[T] {
+func InitGrid[T cmp.Ordered](bounds Point, initValue T) Grid[T] {
 	grid := make([][]T, bounds.Y)
 	for y := 0; y < bounds.Y; y++ {
 		grid[y] = make([]T, bounds.X)
@@ -95,6 +96,17 @@ func (g *Grid[T]) Height() int {
 
 func (g *Grid[T]) Row(i int) []T {
 	return g.grid[i]
+}
+
+func (g *Grid[T]) FindFirst(val T) *Point {
+	for y, row := range g.grid {
+		for x, t := range row {
+			if t == val {
+				return &Point{x, y}
+			}
+		}
+	}
+	return nil
 }
 
 func ParseIntGrid(lines []string) [][]int {
