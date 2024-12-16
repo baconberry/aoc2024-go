@@ -68,3 +68,17 @@ func (d Direction) Inverse() Direction {
 	return NONE
 
 }
+
+func (d Direction) ForwardOr90Turn() []Direction {
+	switch d {
+	case N:
+		return []Direction{N, E, W}
+	case S:
+		return []Direction{S, E, W}
+	case E:
+		return []Direction{E, S, N}
+	case W:
+		return []Direction{W, S, N}
+	}
+	return []Direction{NONE}
+}
