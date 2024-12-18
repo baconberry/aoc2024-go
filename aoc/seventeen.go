@@ -2,8 +2,10 @@ package aoc
 
 import (
 	"aoc2024/util"
+	"log"
 	"math"
 	"strconv"
+	"strings"
 )
 
 type Emu struct {
@@ -24,7 +26,7 @@ const (
 	cdv
 )
 
-func Seventeen(lines []string) string {
+func Seventeen(lines []string, part int) string {
 	registers := util.ParseIntGrid(lines)
 	var emu Emu = Emu{}
 	emu.A = registers[0][0]
@@ -32,11 +34,60 @@ func Seventeen(lines []string) string {
 	emu.C = registers[2][0]
 	program := util.ParseIntArray(lines[len(registers)+1])
 	emu.program = program
-	return emu.execute()
+	if part == 2 {
+		return strconv.Itoa(solveProgram(program, emu.B, emu.C))
+	}
+	result, _ := emu.execute(nil)
+	return SplitToString(result, ",")
 }
 
-func (emu *Emu) execute() string {
-	output := ""
+func SplitToString(a []int, sep string) string {
+	if len(a) == 0 {
+		return ""
+	}
+
+	b := make([]string, len(a))
+	for i, v := range a {
+		b[i] = strconv.Itoa(v)
+	}
+	return strings.Join(b, sep)
+}
+
+func solveProgram(program []int, b, c int) int {
+	var emu Emu = Emu{}
+	emu.program = program
+	cmpFn := func(arr *[]int) bool {
+		for i := 0; i < len(*arr); i++ {
+			if (*arr)[i] != program[i] {
+				return false
+			}
+		}
+
+		return true
+	}
+	lastI := 0
+	for i := 0; i < math.MaxInt; i++ {
+		lastI = i
+		emu.pc = 0
+		emu.A = i
+		emu.B = b
+		emu.C = c
+		result, found := emu.execute((*ProgramPredicate)(&cmpFn))
+		if found {
+			resLen := len(result)
+			if resLen == len(program) {
+				return i
+			}
+		}
+	}
+	log.Println("LastI,", lastI)
+	return -1
+}
+
+type ProgramPredicate func(arr *[]int) bool
+
+func (emu *Emu) execute(cmpFn *ProgramPredicate) ([]int, bool) {
+	output := make([]int, 0)
 	for emu.endNotReached() {
 		opcode := emu.readOpcode()
 		switch opcode {
@@ -61,7 +112,10 @@ func (emu *Emu) execute() string {
 			emu.B = result
 		case out:
 			o := emu.readComboOperand() % 8
-			output += strconv.Itoa(o) + ","
+			output = append(output, o)
+			if cmpFn != nil && !(*cmpFn)(&output) {
+				return output, false
+			}
 		case bdv:
 			denominator := emu.readComboOperand()
 			result := float64(emu.A) / math.Pow(2, float64(denominator))
@@ -73,7 +127,7 @@ func (emu *Emu) execute() string {
 		}
 		emu.pc += 2
 	}
-	return output
+	return output, true
 }
 
 func (emu *Emu) readOpcode() OpCode {
