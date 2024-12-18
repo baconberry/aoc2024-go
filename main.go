@@ -65,7 +65,7 @@ func main() {
 	case day == 17:
 		log.Println("Seventeen result:", aoc.Seventeen(lines))
 	case day == 18:
-		result = aoc.Eighteen(lines)
+		result = aoc.Eighteen(lines, part)
 	}
 
 	log.Println("Result", result)

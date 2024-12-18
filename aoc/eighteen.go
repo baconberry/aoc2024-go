@@ -2,70 +2,38 @@ package aoc
 
 import (
 	"aoc2024/util"
+	"log"
 	"math"
 )
 
-type PointPath []util.Point
-
-func Eighteen(lines []string) int {
-	return eighteen(lines, 70, 70, 1024)
+func Eighteen(lines []string, part int) int {
+	return eighteen(lines, 70, 70, 1024, part)
 }
-func eighteen(lines []string, xb, yb, byteLimit int) int {
+func eighteen(lines []string, xb, yb, byteLimit, part int) int {
 	positions := util.ParseIntGrid(lines)
 	grid := util.InitGrid(util.Point{X: xb + 1, Y: yb + 1}, '.')
 	byteLimit = min(len(positions), byteLimit)
 	for i := 0; i < byteLimit; i++ {
 		grid.SetValue(util.Point{X: positions[i][0], Y: positions[i][1]}, '#')
 	}
-	grid.Print(func(r rune) string {
-		return string(r)
-	})
-	//visitedScore := make(map[util.Point]int)
-	//return findPath(&grid, util.Point{}, util.Point{X: xb, Y: yb}, 0, &visitedScore)
+	//grid.Print(func(r rune) string {
+	//	return string(r)
+	//})
+	if part == 2 {
+		for i := byteLimit; i < len(positions); i++ {
+			block := util.Point{X: positions[i][0], Y: positions[i][1]}
+			grid.SetValue(block, '#')
+			steps := dijkstra(&grid, util.Point{}, util.Point{X: xb, Y: yb})
+			if steps == math.MaxInt {
+				log.Println("Blocked with:", block)
+				return math.MaxInt
+			}
+		}
+	}
 	return dijkstra(&grid, util.Point{}, util.Point{X: xb, Y: yb})
 }
 
 var cardinalSEPriority = []util.Direction{util.E, util.S, util.N, util.W}
-
-func findPath(g *util.Grid[rune], point util.Point, endPoint util.Point, steps int, visited *map[util.Point]int) int {
-	val := g.GetOOBValue(point)
-	if val == nil || *val == '#' {
-		return math.MaxInt
-	}
-
-	if point == endPoint {
-		return steps
-	}
-	prevSteps, ok := (*visited)[point]
-	if ok && steps > prevSteps {
-		return math.MaxInt
-	}
-	(*visited)[point] = steps
-	minSteps := math.MaxInt
-	for _, direction := range cardinalSEPriority {
-		newPoint := point.PlusDirection(direction)
-		localSteps := findPath(g, newPoint, endPoint, steps+1, visited)
-		if localSteps < math.MaxInt {
-			minSteps = min(localSteps, minSteps)
-		}
-	}
-
-	return minSteps
-}
-
-func pointInPath(p *PointPath, u *util.Point) bool {
-	for i := len(*p) - 1; i >= 0; i-- {
-		if *u == (*p)[i] {
-			return true
-		}
-	}
-	return false
-}
-
-type PointDistance struct {
-	point    util.Point
-	distance int
-}
 
 func dijkstra(g *util.Grid[rune], startPoint util.Point, endPoint util.Point) int {
 	distanceMap := make(map[util.Point]int)
@@ -106,7 +74,8 @@ func dijkstra(g *util.Grid[rune], startPoint util.Point, endPoint util.Point) in
 			}
 		}
 		if current == minDistNeighbor {
-			panic("Invalid state")
+			log.Print("Invalid state, returning inf")
+			return math.MaxInt
 		}
 		current = minDistNeighbor
 	}
