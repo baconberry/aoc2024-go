@@ -4,6 +4,7 @@ import (
 	"aoc2024/util"
 	"log"
 	"math"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -54,9 +55,12 @@ func SplitToString(a []int, sep string) string {
 }
 
 func solveProgram(program []int, b, c int) int {
-	var emu Emu = Emu{}
-	emu.program = program
+	ichan := make(chan int, 1000)
+	programLen := len(program)
 	cmpFn := func(arr *[]int) bool {
+		if len(*arr) > programLen {
+			return false
+		}
 		for i := 0; i < len(*arr); i++ {
 			if (*arr)[i] != program[i] {
 				return false
@@ -65,22 +69,42 @@ func solveProgram(program []int, b, c int) int {
 
 		return true
 	}
-	lastI := 0
-	for i := 0; i < math.MaxInt; i++ {
-		lastI = i
-		emu.pc = 0
-		emu.A = i
-		emu.B = b
-		emu.C = c
-		result, found := emu.execute((*ProgramPredicate)(&cmpFn))
-		if found {
-			resLen := len(result)
-			if resLen == len(program) {
-				return i
+	gResult := math.MinInt
+	log.Println("Starting parallel computation with cpus: ", runtime.NumCPU())
+	multiplier := 1000000
+	endRange := 1000000
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go func() {
+			var emu Emu = Emu{}
+			emu.program = program
+			for {
+				start := <-ichan
+				start = start * multiplier
+				for i := start; i <= start+endRange; i++ {
+					emu.pc = 0
+					emu.A = i
+					emu.B = b
+					emu.C = c
+					result, found := emu.execute((*ProgramPredicate)(&cmpFn))
+					if found {
+						resLen := len(result)
+						if resLen == len(program) {
+							if gResult == math.MinInt {
+								gResult = i
+							}
+						}
+					}
+				}
 			}
-		}
+
+		}()
 	}
-	log.Println("LastI,", lastI)
+	for i := 0; i < math.MaxInt; i++ {
+		if gResult > math.MinInt {
+			return gResult
+		}
+		ichan <- i
+	}
 	return -1
 }
 
