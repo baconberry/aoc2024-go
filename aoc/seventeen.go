@@ -2,9 +2,7 @@ package aoc
 
 import (
 	"aoc2024/util"
-	"log"
 	"math"
-	"runtime"
 	"strconv"
 	"strings"
 )
@@ -29,14 +27,19 @@ const (
 
 func Seventeen(lines []string, part int) string {
 	registers := util.ParseIntGrid(lines)
-	var emu Emu = Emu{}
+	var emu = Emu{}
 	emu.A = registers[0][0]
 	emu.B = registers[1][0]
 	emu.C = registers[2][0]
 	program := util.ParseIntArray(lines[len(registers)+1])
 	emu.program = program
 	if part == 2 {
-		return strconv.Itoa(solveProgram(program, emu.B, emu.C))
+		for i := 1; i < 8; i++ {
+			loc := heuristic(program, i)
+			if loc >= 0 {
+				return strconv.Itoa(loc)
+			}
+		}
 	}
 	result, _ := emu.execute(nil)
 	return SplitToString(result, ",")
@@ -54,56 +57,31 @@ func SplitToString(a []int, sep string) string {
 	return strings.Join(b, sep)
 }
 
-func solveProgram(program []int, b, c int) int {
-	ichan := make(chan int, 1000)
+func heuristic(program []int, prevHint int) int {
+	emu := Emu{program: program}
 	programLen := len(program)
-	cmpFn := func(arr *[]int) bool {
-		if len(*arr) > programLen {
-			return false
-		}
-		for i := 0; i < len(*arr); i++ {
-			if (*arr)[i] != program[i] {
-				return false
+mainFor:
+	for i := 0; i < 8; i++ {
+		locI := (prevHint << 3) | i
+		emu.A = locI
+		emu.B = 0
+		emu.C = 0
+		emu.pc = 0
+		localResult, _ := emu.execute(nil)
+		//log.Println(locI, strconv.FormatInt(int64(i), 2), localResult)
+		resLen := len(localResult)
+		for i := 0; i < len(localResult); i++ {
+			if localResult[resLen-1-i] != program[programLen-1-i] {
+				continue mainFor
 			}
 		}
-
-		return true
-	}
-	gResult := math.MinInt
-	log.Println("Starting parallel computation with cpus: ", runtime.NumCPU())
-	multiplier := 1000000
-	endRange := 1000000
-	for i := 0; i < runtime.NumCPU(); i++ {
-		go func() {
-			var emu Emu = Emu{}
-			emu.program = program
-			for {
-				start := <-ichan
-				start = start * multiplier
-				for i := start; i <= start+endRange; i++ {
-					emu.pc = 0
-					emu.A = i
-					emu.B = b
-					emu.C = c
-					result, found := emu.execute((*ProgramPredicate)(&cmpFn))
-					if found {
-						resLen := len(result)
-						if resLen == len(program) {
-							if gResult == math.MinInt {
-								gResult = i
-							}
-						}
-					}
-				}
-			}
-
-		}()
-	}
-	for i := 0; i < math.MaxInt; i++ {
-		if gResult > math.MinInt {
-			return gResult
+		if len(program) == len(localResult) {
+			return locI
 		}
-		ichan <- i
+		futureRes := heuristic(program, locI)
+		if futureRes >= 0 {
+			return futureRes
+		}
 	}
 	return -1
 }
