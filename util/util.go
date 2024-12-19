@@ -5,6 +5,7 @@ import (
 	"log"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Grid[T cmp.Ordered] struct {
@@ -227,6 +228,13 @@ func ParseSingleDigitArray(line string) []int {
 			panic("Could not convert string to int " + err.Error())
 		}
 		arr = append(arr, n)
+	}
+	return arr
+}
+func ParseStringArray(line string) []string {
+	arr := make([]string, 0)
+	for _, s := range strings.Split(line, ",") {
+		arr = append(arr, strings.Trim(s, " "))
 	}
 	return arr
 }
