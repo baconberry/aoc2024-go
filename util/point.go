@@ -33,3 +33,10 @@ func (p Point) PlusAll(d int) Point {
 func (p Point) PlusPoint(o Point) Point {
 	return Point{p.X + o.X, p.Y + o.Y}
 }
+
+func (p Point) Scale(s int) Point {
+	d := p
+	d.X *= s
+	d.Y *= s
+	return d
+}
