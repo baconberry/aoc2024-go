@@ -70,6 +70,8 @@ func main() {
 		result = aoc.Nineteen(lines, part)
 	case day == 20:
 		result = aoc.Twenty(lines, part)
+	case day == 22:
+		result = aoc.Twentytwo(lines)
 	}
 
 	log.Println("Result", result)
