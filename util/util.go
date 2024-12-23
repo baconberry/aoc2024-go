@@ -238,3 +238,15 @@ func ParseStringArray(line string) []string {
 	}
 	return arr
 }
+
+func ParseStringGrid(lines []string, delimiter string) [][]string {
+	grid := make([][]string, 0)
+	for _, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
+		row := strings.Split(line, delimiter)
+		grid = append(grid, row)
+	}
+	return grid
+}
