@@ -69,7 +69,7 @@ func main() {
 	case day == 19:
 		result = aoc.Nineteen(lines, part)
 	case day == 20:
-		result = aoc.Twenty(lines, part)
+		result = aoc.Twenty(lines, part, 20)
 	case day == 22:
 		result = aoc.Twentytwo(lines, part)
 	case day == 23:

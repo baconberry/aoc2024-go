@@ -5,11 +5,11 @@ import (
 	"math"
 )
 
-func Twenty(lines []string, part int) int {
-	return twenty(lines, 100)
+func Twenty(lines []string, part, maxCheat int) int {
+	return twenty(lines, 100, part, maxCheat)
 }
 
-func twenty(lines []string, saveGoal int) int {
+func twenty(lines []string, saveGoal, part, maxCheat int) int {
 	grid := util.NewGrid(util.ParseRuneGrid(lines))
 	start := grid.FindFirst('S')
 	end := grid.FindFirst('E')
@@ -17,6 +17,36 @@ func twenty(lines []string, saveGoal int) int {
 	distFromEnd := minDistanceFromSource(&grid, *end)
 	distFromStart := minDistanceFromSource(&grid, *start)
 	lowerBound = lowerBound - saveGoal
+	if part == 2 {
+		return raceCheatingRadius(distFromStart, distFromEnd, lowerBound, maxCheat)
+	}
+	return raceCheatingDirect(distFromStart, distFromEnd, lowerBound)
+}
+
+func raceCheatingRadius(start map[util.Point]int, end map[util.Point]int, bound, maxCheat int) int {
+	sum := 0
+	for point, startDist := range start {
+		if startDist == math.MaxInt {
+			continue
+		}
+		for endPoint, endDist := range end {
+			if endDist == math.MaxInt {
+				continue
+			}
+			pointDistance := endPoint.Distance(point)
+			if pointDistance > maxCheat {
+				continue
+			}
+			totalDistance := startDist + endDist + pointDistance
+			if totalDistance <= bound {
+				sum += 1
+			}
+		}
+	}
+	return sum
+}
+
+func raceCheatingDirect(distFromStart map[util.Point]int, distFromEnd map[util.Point]int, lowerBound int) int {
 	sum := 0
 	for point, startDist := range distFromStart {
 		if startDist == math.MaxInt {

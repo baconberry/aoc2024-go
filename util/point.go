@@ -40,3 +40,19 @@ func (p Point) Scale(s int) Point {
 	d.Y *= s
 	return d
 }
+
+func (p Point) Distance(other Point) int {
+	dist := p.Diff(other)
+	distance := 0
+	if dist.X < 0 {
+		distance += dist.X * -1
+	} else {
+		distance += dist.X
+	}
+	if dist.Y < 0 {
+		distance += dist.Y * -1
+	} else {
+		distance += dist.Y
+	}
+	return distance
+}
