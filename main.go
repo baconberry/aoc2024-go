@@ -75,7 +75,7 @@ func main() {
 	case day == 23:
 		result = aoc.Twentythree(lines, part)
 	case day == 24:
-		result = aoc.Twentyfour(lines)
+		result = aoc.Twentyfour(lines, part)
 	case day == 25:
 		result = aoc.Twentyfive(lines)
 	}
