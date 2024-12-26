@@ -2,7 +2,7 @@ package aoc
 
 import (
 	"aoc2024/util"
-	"log"
+	"strconv"
 )
 
 type PairPoint struct {
@@ -57,7 +57,7 @@ func (k *Keypad) calculateMoves(a util.Point, b util.Point, path []util.Directio
 	return allPaths
 }
 
-func Twentyone(lines []string) int {
+func Twentyone(lines []string, part int) int {
 	numpad := createNumKeyboard()
 	numpad.CalculateAllMovements()
 	arrows := createArrowMap()
@@ -66,9 +66,13 @@ func Twentyone(lines []string) int {
 	humanArrows.toAvoid = util.Point{X: -1, Y: -1}
 	humanArrows.CalculateAllMovements()
 	depth := 3
+	if part == 2 {
+		depth = 26
+	}
 	currentBotPos := make([]util.Point, depth+1)
 	sum := 0
 	keypads := make([]Keypad, depth+1)
+	memo := make(map[string]int)
 	for _, line := range lines {
 		if len(line) == 0 {
 			continue
@@ -81,35 +85,45 @@ func Twentyone(lines []string) int {
 			keypads[i] = arrows
 		}
 		keypads[0] = humanArrows
-		keyCommands := moveBotToKey(&keypads, line, depth, currentBotPos)
+		keyCommands := moveBotToKey(&keypads, line, depth, currentBotPos, &memo)
 		codes := util.ParseIntArray(line)
-		log.Println(line, " ", keyCommands, " ", len(keyCommands), " ", codes[0])
-		sum += len(keyCommands) * codes[0]
+		//log.Println(line, " ", keyCommands, " ", keyCommands, " ", codes[0])
+		sum += keyCommands * codes[0]
 	}
 	return sum
 }
 
-func moveBotToKey(keypads *[]Keypad, codes string, depth int, botPos []util.Point) string {
+func moveBotToKey(keypads *[]Keypad, codes string, depth int, botPos []util.Point, memo *map[string]int) int {
 	if depth == 0 {
-		return codes
+		return len(codes)
 	}
-	allCodes := ""
+	allCodes := 0
 	keypad := (*keypads)[depth]
+	memoKey := getMemoKeyAlt(depth, codes)
+	memoRes, ok := (*memo)[memoKey]
+	if ok {
+		return memoRes
+	}
 	for _, c := range codes {
 		current := (botPos)[depth]
 		dest := keypad.keyPos[c]
 		moves := keypad.allMovements[PairPoint{current, dest}]
-		minCommand := ""
+		minCommand := -1
 		for _, move := range moves {
-			localCommand := moveBotToKey(keypads, move, depth-1, botPos)
-			if minCommand == "" || len(localCommand) < len(minCommand) {
+			localCommand := moveBotToKey(keypads, move, depth-1, botPos, memo)
+			if minCommand == -1 || localCommand < minCommand {
 				minCommand = localCommand
 			}
 		}
 		(botPos)[depth] = dest
 		allCodes += minCommand
 	}
+	(*memo)[memoKey] = allCodes
 	return allCodes
+}
+
+func getMemoKeyAlt(depth int, codes string) string {
+	return strconv.Itoa(depth) + "_" + codes
 }
 
 func dirToCommand(d util.Direction) rune {

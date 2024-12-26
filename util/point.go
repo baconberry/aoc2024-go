@@ -1,6 +1,9 @@
 package util
 
-import "math"
+import (
+	"math"
+	"strconv"
+)
 
 type Point struct {
 	X, Y int
@@ -45,6 +48,10 @@ func (p Point) Scale(s int) Point {
 
 func (p Point) DistanceTo(b Point) int {
 	return int(math.Abs(float64(b.X-p.X)) + math.Abs(float64(b.Y-p.Y)))
+}
+
+func (p Point) String() string {
+	return "(" + strconv.Itoa(p.X) + "," + strconv.Itoa(p.Y) + ")"
 }
 
 func (p Point) Distance(other Point) int {
