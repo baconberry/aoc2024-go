@@ -1,5 +1,7 @@
 package util
 
+import "math"
+
 type Point struct {
 	X, Y int
 }
@@ -39,6 +41,10 @@ func (p Point) Scale(s int) Point {
 	d.X *= s
 	d.Y *= s
 	return d
+}
+
+func (p Point) DistanceTo(b Point) int {
+	return int(math.Abs(float64(b.X-p.X)) + math.Abs(float64(b.Y-p.Y)))
 }
 
 func (p Point) Distance(other Point) int {
