@@ -2,9 +2,7 @@ package aoc
 
 import (
 	"aoc2024/util"
-	"log"
 	"sort"
-	"strings"
 )
 
 type DeviceSet map[string]bool
@@ -48,7 +46,7 @@ func Twentythree(lines []string, part int) int {
 			maxArray = append(maxArray, s)
 		}
 		sort.Strings(maxArray)
-		log.Println(strings.Join(maxArray, ","))
+		//log.Println(strings.Join(maxArray, ","))
 		return len(maxCompleteSubgraph)
 	}
 

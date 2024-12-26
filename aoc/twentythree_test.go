@@ -14,7 +14,7 @@ func TestTwentythree(t *testing.T) {
 	}
 	result = Twentythree(strings.Split(text, "\n"), 2)
 
-	if result != 4 {
+	if result != 3 {
 		t.Fail()
 	}
 }

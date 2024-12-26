@@ -2,7 +2,6 @@ package aoc
 
 import (
 	"aoc2024/util"
-	"log"
 	"strconv"
 )
 
@@ -37,7 +36,6 @@ func Ten(lines []string, part int) int {
 				trail.path = append(trail.path, startPoint)
 				exploreTrails(&grid, startPoint, util.NONE, trail, &trails)
 				score = len(trails)
-				log.Println(score)
 			}
 			sum += score
 		}
